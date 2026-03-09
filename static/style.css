@@ -45,6 +45,35 @@ input[type="url"] {
   margin-bottom: 12px;
 }
 
+
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  resize: vertical;
+  font-family: Arial, sans-serif;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.divider {
+  text-align: center;
+  font-weight: 700;
+  margin: 8px 0 12px;
+  color: #6b7280;
+}
+
+
 button, .button-link {
   background: var(--primary);
   color: #fff;

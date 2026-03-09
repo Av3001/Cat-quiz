@@ -9,21 +9,51 @@
 <body>
   <div class="container">
     <h1>Aeon → CAT Quiz Generator</h1>
+
+    <p>Paste an Aeon article URL or paste article text directly to generate a CAT-style quiz.</p>
+
     <p>Paste an Aeon article URL to generate a CAT-style reading comprehension quiz.</p>
+
 
     {% if error %}
       <div class="error-box">{{ error }}</div>
     {% endif %}
 
     <form id="quiz-form" action="{{ url_for('generate_quiz') }}" method="POST">
+
+      <label for="article_url">Aeon Article URL (optional if text is pasted)</label>
+
       <label for="article_url">Aeon Article URL</label>
+
       <input
         id="article_url"
         name="article_url"
         type="url"
         placeholder="https://aeon.co/essays/..."
+
+      />
+
+      <div class="divider">OR</div>
+
+      <label for="article_text">Paste Article Text (optional if URL is provided)</label>
+      <textarea
+        id="article_text"
+        name="article_text"
+        rows="10"
+        placeholder="Paste full article text here..."
+      ></textarea>
+
+
+      <label for="provider">AI Provider</label>
+      <select id="provider" name="provider">
+        <option value="openai" {% if provider == 'openai' %}selected{% endif %}>OpenAI</option>
+        <option value="gemini" {% if provider == 'gemini' %}selected{% endif %}>Google Gemini</option>
+      </select>
+
+
         required
       />
+
 
       <button type="submit">Generate Quiz</button>
     </form>

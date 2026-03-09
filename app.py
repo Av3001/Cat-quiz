@@ -8,19 +8,70 @@ from openai_service import (
     generate_cat_questions,
 )
 
+from gemini_service import (
+    GeminiServiceError,
+    extract_key_paragraphs_gemini,
+    generate_cat_questions_gemini,
+)
+
+
 app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
 def index():
     """Render the homepage with the URL submission form."""
+
+    return render_template("index.html", provider="openai")
+=======
     return render_template("index.html")
+
 
 
 @app.route("/generate", methods=["POST"])
 def generate_quiz():
     """Handle form submission, create quiz payload, and render quiz page."""
     article_url = request.form.get("article_url", "").strip()
+
+    article_text_input = request.form.get("article_text", "").strip()
+    provider = request.form.get("provider", "openai").strip().lower()
+
+    if not article_url and not article_text_input:
+        return render_template(
+            "index.html",
+            error="Please provide an Aeon article URL or paste article text.",
+            provider=provider,
+        )
+
+    try:
+        if article_text_input:
+            if len(article_text_input) < 250:
+                return render_template(
+                    "index.html",
+                    error="Pasted text is too short. Please provide a fuller article excerpt.",
+                    provider=provider,
+                )
+            article_title = "Pasted Article Text"
+            article_text = article_text_input
+            source_url = ""
+        else:
+            article_title, article_text = scrape_aeon_article(article_url)
+            source_url = article_url
+
+        if provider == "gemini":
+            paragraphs = extract_key_paragraphs_gemini(article_text)
+            questions = generate_cat_questions_gemini(paragraphs)
+        else:
+            paragraphs = extract_key_paragraphs(article_text)
+            questions = generate_cat_questions(paragraphs)
+    except ValueError as exc:
+        return render_template("index.html", error=str(exc), provider=provider)
+    except (OpenAIServiceError, GeminiServiceError) as exc:
+        return render_template(
+            "index.html",
+            error=f"AI generation error ({provider}): {exc}",
+            provider=provider,
+
 
     if not article_url:
         return render_template("index.html", error="Please provide an Aeon article URL.")
@@ -35,17 +86,26 @@ def generate_quiz():
         return render_template(
             "index.html",
             error=f"AI generation error: {exc}",
+
         )
     except Exception as exc:  # Defensive fallback for unexpected runtime issues.
         return render_template(
             "index.html",
             error=f"Unexpected error while generating quiz: {exc}",
+
+            provider=provider,
+
+
         )
 
     return render_template(
         "quiz.html",
         title=article_title,
+
+        url=source_url,
+
         url=article_url,
+
         paragraphs=paragraphs,
         questions=questions,
     )
