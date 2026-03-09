@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results - {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz Results</h1>
+    <p class="score">You scored <strong>{{ score }}/{{ total }}</strong>.</p>
+
+    <section>
+      <h2>Reference Paragraphs</h2>
+      {% for p in paragraphs %}
+        <div class="paragraph-card">
+          <strong>Paragraph {{ loop.index }}</strong>
+          <p>{{ p }}</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <section>
+      <h2>Answer Review</h2>
+      {% for item in results %}
+        <div class="question-card {% if item.is_correct %}correct{% else %}incorrect{% endif %}">
+          <p><strong>Q{{ loop.index }}.</strong> {{ item.question }}</p>
+          <ul>
+            {% for label, text in item.options.items() %}
+              <li>
+                <strong>{{ label }}.</strong> {{ text }}
+                {% if label == item.correct_answer %}
+                  <span class="badge good">Correct answer</span>
+                {% endif %}
+                {% if label == item.user_answer and not item.is_correct %}
+                  <span class="badge bad">Your choice</span>
+                {% elif label == item.user_answer and item.is_correct %}
+                  <span class="badge good">Your choice</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+
+          <p><strong>Your answer:</strong> {{ item.user_answer or 'Not answered' }}</p>
+          <p><strong>Correct answer:</strong> {{ item.correct_answer }}</p>
+
+          {% if item.is_correct %}
+            <p class="explanation"><strong>Why this is correct:</strong> {{ item.correct_explanation }}</p>
+          {% else %}
+            <p class="explanation"><strong>Why your answer is incorrect:</strong> {{ item.incorrect_explanation }}</p>
+            <p class="explanation"><strong>Correct reasoning:</strong> {{ item.correct_explanation }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section>
+
+    <a class="button-link" href="{{ url_for('index') }}">Generate another quiz</a>
+  </div>
+</body>
+</html>
