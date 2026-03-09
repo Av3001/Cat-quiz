@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAT Quiz Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>CAT Quiz Generator</h1>
+    <p>Paste article text below to generate CAT-style questions and answers.</p>
+
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form id="quiz-form" action="{{ url_for('generate_quiz') }}" method="POST">
+      <label for="article_text">Paste Article Text</label>
+      <textarea
+        id="article_text"
+        name="article_text"
+        rows="12"
+        placeholder="Paste full article text here..."
+        required
+      ></textarea>
+
+      <label for="provider">AI Provider</label>
+      <select id="provider" name="provider">
+        <option value="openai" {% if provider == 'openai' %}selected{% endif %}>OpenAI</option>
+        <option value="gemini" {% if provider == 'gemini' %}selected{% endif %}>Google Gemini</option>
+      </select>
+
+      <button type="submit">Generate Quiz</button>
+    </form>
+
+    <div id="loading" class="loading hidden">
+      Generating quiz... this may take 10-30 seconds.
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('quiz-form');
+    const loading = document.getElementById('loading');
+    form.addEventListener('submit', () => {
+      loading.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
