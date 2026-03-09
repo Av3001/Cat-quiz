@@ -46,6 +46,7 @@ input[type="url"] {
 }
 
 
+
 textarea {
   width: 100%;
   padding: 10px;
@@ -71,6 +72,7 @@ select {
   margin: 8px 0 12px;
   color: #6b7280;
 }
+
 
 button, .button-link {
   background: var(--primary);

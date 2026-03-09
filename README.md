@@ -1,6 +1,7 @@
 # Aeon CAT Quiz Generator
 
 A Flask web app that:
+
 1. Accepts either an Aeon article URL or pasted article text.
 2. Scrapes and cleans article content with `requests` + `BeautifulSoup` when URL mode is used.
 3. Supports OpenAI and Google Gemini for paragraph extraction + question generation.
@@ -14,7 +15,10 @@ A Flask web app that:
   app.py
   scraper.py
   openai_service.py
+
   gemini_service.py
+
+
   templates/
     index.html
     quiz.html
@@ -37,6 +41,7 @@ A Flask web app that:
    ```
 3. Set environment variables:
    ```bash
+
    # OpenAI mode
    export OPENAI_API_KEY="your_openai_api_key_here"
    export OPENAI_MODEL="gpt-4o-mini"
@@ -46,6 +51,11 @@ A Flask web app that:
    export GEMINI_MODEL="gemini-1.5-flash"
 
    # Optional runtime settings
+=======
+   export OPENAI_API_KEY="your_api_key_here"
+   # optional
+   export OPENAI_MODEL="gpt-4o-mini"
+
    export FLASK_HOST="0.0.0.0"
    export FLASK_PORT="5000"
    ```
@@ -102,7 +112,11 @@ Return strictly valid JSON in this format:
 ```
 
 ## Notes
+
 - Invalid URLs, very short pasted text, and scrape failures are handled and surfaced on the homepage.
 - Choose AI provider (`OpenAI` or `Google Gemini`) from the homepage before generating a quiz.
+
+- Invalid URLs and scrape failures are handled and surfaced on the homepage.
+
 - API JSON shape follows the requested schema with both incorrect and correct explanations per question.
 - A loading indicator appears after form submission while quiz generation runs.
