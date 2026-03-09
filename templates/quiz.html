@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz - {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>{{ title }}</h1>
+    {% if url %}
+    <p><a href="{{ url }}" target="_blank" rel="noopener">View original article</a></p>
+    {% endif %}
+
+    <section>
+      <h2>Key Paragraphs</h2>
+      {% for p in paragraphs %}
+        <div class="paragraph-card">
+          <strong>Paragraph {{ loop.index }}</strong>
+          <p>{{ p }}</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <form action="{{ url_for('submit_quiz') }}" method="POST">
+      <input type="hidden" name="title" value="{{ title }}" />
+      <input type="hidden" name="question_count" value="{{ questions|length }}" />
+
+      {% for p in paragraphs %}
+        <input type="hidden" name="paragraphs" value="{{ p }}" />
+      {% endfor %}
+
+      <section>
+        <h2>Quiz Questions</h2>
+        {% for q in questions %}
+          <div class="question-card">
+            <p><strong>Q{{ loop.index }}.</strong> {{ q.question }}</p>
+
+            <input type="hidden" name="question_{{ loop.index0 }}" value="{{ q.question }}" />
+            <input type="hidden" name="correct_{{ loop.index0 }}" value="{{ q.correct_answer }}" />
+            <input type="hidden" name="correct_expl_{{ loop.index0 }}" value="{{ q.correct_explanation }}" />
+            <input type="hidden" name="incorrect_expl_{{ loop.index0 }}" value="{{ q.incorrect_explanation }}" />
+
+            {% for label, text in q.options.items() %}
+              <input type="hidden" name="option_{{ loop.parent.loop.index0 }}_{{ label }}" value="{{ text }}" />
+              <label class="option-row">
+                <input
+                  type="radio"
+                  name="answer_{{ loop.parent.loop.index0 }}"
+                  value="{{ label }}"
+                  required
+                />
+                <span><strong>{{ label }}.</strong> {{ text }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </section>
+
+      <button type="submit">Submit Quiz</button>
+    </form>
+  </div>
+</body>
+</html>
